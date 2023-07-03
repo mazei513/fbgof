@@ -18,6 +18,6 @@ func main() {
 		if str == "" {
 			str = fmt.Sprint(i)
 		}
-		os.Stdout.WriteString(str)
+		os.Stdout.WriteString(str + "\n")
 	}
 }
