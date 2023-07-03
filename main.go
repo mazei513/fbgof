@@ -5,7 +5,6 @@ import (
 	"math"
 	"os"
 	"runtime/pprof"
-	"strconv"
 	"strings"
 )
 
@@ -26,26 +25,62 @@ func main() {
 	}
 	sb := &strings.Builder{}
 	sb.Grow(1000000)
-	for i := int64(1); i < int64(*n); i += 15 {
-		sb.WriteString(strconv.FormatInt(i, base))
+	for i := 1; i < *n; i += 15 {
+		sb.Write(itoa(i))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.FormatInt(i+1, base))
+		sb.Write(itoa(i + 1))
 		sb.WriteString("\nFizz\n")
-		sb.WriteString(strconv.FormatInt(i+3, base))
+		sb.Write(itoa(i + 3))
 		sb.WriteString("\nBuzz\nFizz\n")
-		sb.WriteString(strconv.FormatInt(i+6, base))
+		sb.Write(itoa(i + 6))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.FormatInt(i+7, base))
+		sb.Write(itoa(i + 7))
 		sb.WriteString("\nFizz\nBuzz\n")
-		sb.WriteString(strconv.FormatInt(i+10, base))
+		sb.Write(itoa(i + 10))
 		sb.WriteString("\nFizz\n")
-		sb.WriteString(strconv.FormatInt(i+12, base))
+		sb.Write(itoa(i + 12))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.FormatInt(i+13, base))
+		sb.Write(itoa(i + 13))
 		sb.WriteString("\nFizzBuzz\n")
 		if sb.Len() > 1000000 {
 			os.Stdout.WriteString(sb.String())
 			sb.Reset()
 		}
 	}
+}
+
+const smallsString = "00010203040506070809" +
+	"10111213141516171819" +
+	"20212223242526272829" +
+	"30313233343536373839" +
+	"40414243444546474849" +
+	"50515253545556575859" +
+	"60616263646566676869" +
+	"70717273747576777879" +
+	"80818283848586878889" +
+	"90919293949596979899"
+const maxBuf = 64
+
+var itoaBuf [maxBuf]byte
+
+func itoa(u int) []byte {
+	i := maxBuf
+	us := uint(u)
+	for us >= 100 {
+		is := us % 100 * 2
+		us /= 100
+		i -= 2
+		itoaBuf[i+1] = smallsString[is+1]
+		itoaBuf[i+0] = smallsString[is+0]
+	}
+
+	// us < 100
+	is := us * 2
+	i--
+	itoaBuf[i] = smallsString[is+1]
+	if us >= 10 {
+		i--
+		itoaBuf[i] = smallsString[is]
+	}
+	return itoaBuf[i:]
 }
