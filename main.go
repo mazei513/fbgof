@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"flag"
 	"math"
@@ -13,7 +12,7 @@ var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 var n = flag.Int("n", math.MaxInt, "N")
 
 const base = 10
-const outBufMax = 1000000
+const outBufMax = 5000
 
 func main() {
 	flag.Parse()
