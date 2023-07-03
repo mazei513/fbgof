@@ -11,7 +11,6 @@ import (
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 var n = flag.Int("n", math.MaxInt, "N")
-var memprofile = flag.String("memprofile", "", "write memory profile to this file")
 
 const base = 10
 
@@ -28,7 +27,6 @@ func main() {
 	sb := &strings.Builder{}
 	sb.Grow(1000000)
 	for i := int64(1); i < int64(*n); i += 15 {
-
 		sb.WriteString(strconv.FormatInt(i, base))
 		sb.WriteString("\n")
 		sb.WriteString(strconv.FormatInt(i+1, base))
@@ -49,14 +47,5 @@ func main() {
 			os.Stdout.WriteString(sb.String())
 			sb.Reset()
 		}
-	}
-	if *memprofile != "" {
-		f, err := os.Create(*memprofile)
-		if err != nil {
-			panic(err)
-		}
-		pprof.WriteHeapProfile(f)
-		f.Close()
-		return
 	}
 }
