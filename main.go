@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"flag"
 	"math"
@@ -28,21 +29,24 @@ func main() {
 	sb.Grow(outBufMax * 10)
 	interBuf := make([]byte, 0, 10*15)
 	for i := 1; i < *n; i += 15 {
-		interBuf = append(interBuf, itoa(i)...)
+		l, b := itoa(i)
+		interBuf = append(interBuf, b...)
 		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoa(i+1)...)
+		interBuf = append(interBuf, itoafast(l, i+1)...)
 		interBuf = append(interBuf, []byte("\nFizz\n")...)
-		interBuf = append(interBuf, itoa(i+3)...)
+		interBuf = append(interBuf, itoafast(l, i+3)...)
 		interBuf = append(interBuf, []byte("\nBuzz\nFizz\n")...)
-		interBuf = append(interBuf, itoa(i+6)...)
+		l, b = itoa(i + 6)
+		interBuf = append(interBuf, b...)
 		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoa(i+7)...)
+		interBuf = append(interBuf, itoafast(l, i+7)...)
 		interBuf = append(interBuf, []byte("\nFizz\nBuzz\n")...)
-		interBuf = append(interBuf, itoa(i+10)...)
+		l, b = itoa(i + 10)
+		interBuf = append(interBuf, b...)
 		interBuf = append(interBuf, []byte("\nFizz\n")...)
-		interBuf = append(interBuf, itoa(i+12)...)
+		interBuf = append(interBuf, itoafast(l, i+12)...)
 		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoa(i+13)...)
+		interBuf = append(interBuf, itoafast(l, i+13)...)
 		interBuf = append(interBuf, []byte("\nFizzBuzz\n")...)
 		sb.Write(interBuf)
 		interBuf = interBuf[:0]
@@ -67,7 +71,7 @@ const maxBuf = 64
 
 var itoaBuf [maxBuf]byte
 
-func itoa(u int) []byte {
+func itoa(u int) (int, []byte) {
 	i := maxBuf
 	us := uint(u)
 	for us >= 100 {
@@ -85,5 +89,17 @@ func itoa(u int) []byte {
 		i--
 		itoaBuf[i] = smallsString[is]
 	}
-	return itoaBuf[i:]
+	return i, itoaBuf[i:]
+}
+
+func itoafast(l, u int) []byte {
+	i := maxBuf
+	us := uint(u)
+	is := us % 100 * 2
+	us /= 100
+	i -= 2
+	itoaBuf[i+1] = smallsString[is+1]
+	itoaBuf[i+0] = smallsString[is+0]
+
+	return itoaBuf[l:]
 }
