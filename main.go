@@ -27,24 +27,21 @@ func main() {
 	sb := bufio.NewWriter(os.Stdout)
 	interBuf := make([]byte, 0, 10*15)
 	for i := 1; i < *n; i += 15 {
-		l, b := itoa(i)
-		interBuf = append(interBuf, b...)
-		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoafast(l, i+1)...)
+		interBuf = append(interBuf, itoa(i)...)
+		interBuf = append(interBuf, '\n')
+		interBuf = append(interBuf, itoa(i+1)...)
 		interBuf = append(interBuf, []byte("\nFizz\n")...)
-		interBuf = append(interBuf, itoafast(l, i+3)...)
+		interBuf = append(interBuf, itoa(i+3)...)
 		interBuf = append(interBuf, []byte("\nBuzz\nFizz\n")...)
-		l, b = itoa(i + 6)
-		interBuf = append(interBuf, b...)
-		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoafast(l, i+7)...)
+		interBuf = append(interBuf, itoa(i+6)...)
+		interBuf = append(interBuf, '\n')
+		interBuf = append(interBuf, itoa(i+7)...)
 		interBuf = append(interBuf, []byte("\nFizz\nBuzz\n")...)
-		l, b = itoa(i + 10)
-		interBuf = append(interBuf, b...)
+		interBuf = append(interBuf, itoa(i+10)...)
 		interBuf = append(interBuf, []byte("\nFizz\n")...)
-		interBuf = append(interBuf, itoafast(l, i+12)...)
-		interBuf = append(interBuf, []byte("\n")...)
-		interBuf = append(interBuf, itoafast(l, i+13)...)
+		interBuf = append(interBuf, itoa(i+12)...)
+		interBuf = append(interBuf, '\n')
+		interBuf = append(interBuf, itoa(i+13)...)
 		interBuf = append(interBuf, []byte("\nFizzBuzz\n")...)
 		_, err := sb.Write(interBuf)
 		if err != nil {
@@ -68,13 +65,26 @@ const smallsString = "00010203040506070809" +
 	"70717273747576777879" +
 	"80818283848586878889" +
 	"90919293949596979899"
-const maxBuf = 11
+const maxBuf = 10
 
 var itoaBuf [maxBuf]byte
+var lastL int = -1
+var lastUs uint
 
-func itoa(u int) (int, []byte) {
+func itoa(u int) []byte {
 	i := maxBuf
 	us := uint(u)
+	if us >= 100 {
+		is := us % 100 * 2
+		us /= 100
+		i -= 2
+		itoaBuf[i+1] = smallsString[is+1]
+		itoaBuf[i+0] = smallsString[is+0]
+		if lastUs == us {
+			return itoaBuf[lastL:]
+		}
+		lastUs = us
+	}
 	for us >= 100 {
 		is := us % 100 * 2
 		us /= 100
@@ -90,14 +100,6 @@ func itoa(u int) (int, []byte) {
 		i--
 		itoaBuf[i] = smallsString[is]
 	}
-	return i, itoaBuf[i:]
-}
-
-func itoafast(l, u int) []byte {
-	us := uint(u)
-	is := us % 100 * 2
-	itoaBuf[maxBuf-1] = smallsString[is+1]
-	itoaBuf[maxBuf-2] = smallsString[is]
-
-	return itoaBuf[l:]
+	lastL = i
+	return itoaBuf[i:]
 }
