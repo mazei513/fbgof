@@ -11,6 +11,7 @@ import (
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 var n = flag.Int("n", math.MaxInt, "N")
+var memprofile = flag.String("memprofile", "", "write memory profile to this file")
 
 func main() {
 	flag.Parse()
@@ -23,28 +24,28 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 	sb := &strings.Builder{}
-	for i := 1; i < *n; i += 15 {
-		sb.WriteString(strconv.Itoa(i))
+	for i := int64(1); i < int64(*n); i += 15 {
+		sb.WriteString(strconv.FormatInt(i, 16))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.Itoa(i + 1))
+		sb.WriteString(strconv.FormatInt(i+1, 16))
 		sb.WriteString("\n")
 		sb.WriteString("Fizz\n")
-		sb.WriteString(strconv.Itoa(i + 3))
+		sb.WriteString(strconv.FormatInt(i+3, 16))
 		sb.WriteString("\n")
 		sb.WriteString("Buzz\n")
 		sb.WriteString("Fizz\n")
-		sb.WriteString(strconv.Itoa(i + 6))
+		sb.WriteString(strconv.FormatInt(i+6, 16))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.Itoa(i + 7))
+		sb.WriteString(strconv.FormatInt(i+7, 16))
 		sb.WriteString("\n")
 		sb.WriteString("Fizz\n")
 		sb.WriteString("Buzz\n")
-		sb.WriteString(strconv.Itoa(i + 10))
+		sb.WriteString(strconv.FormatInt(i+10, 16))
 		sb.WriteString("\n")
 		sb.WriteString("Fizz\n")
-		sb.WriteString(strconv.Itoa(i + 12))
+		sb.WriteString(strconv.FormatInt(i+12, 16))
 		sb.WriteString("\n")
-		sb.WriteString(strconv.Itoa(i + 13))
+		sb.WriteString(strconv.FormatInt(i+13, 16))
 		sb.WriteString("\n")
 		sb.WriteString("FizzBuzz\n")
 		if sb.Len() > 1000000 {
