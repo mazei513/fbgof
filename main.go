@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
 )
 
 func main() {
@@ -17,6 +18,6 @@ func main() {
 		if str == "" {
 			str = fmt.Sprint(i)
 		}
-		fmt.Println(str)
+		os.Stdout.WriteString(str)
 	}
 }
