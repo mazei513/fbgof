@@ -11,9 +11,6 @@ import (
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 var n = flag.Int("n", math.MaxInt, "N")
 
-const base = 10
-const outBufMax = 5000
-
 func main() {
 	flag.Parse()
 	if *cpuprofile != "" {
@@ -25,7 +22,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 	sb := bufio.NewWriter(os.Stdout)
-	interBuf := make([]byte, 0, 10*15)
+	interBuf := make([]byte, 0, 19*15)
 	for i := 1; i < *n; i += 15 {
 		interBuf = append(interBuf, itoa(i)...)
 		interBuf = append(interBuf, '\n')
@@ -65,7 +62,7 @@ const smallsString = "00010203040506070809" +
 	"70717273747576777879" +
 	"80818283848586878889" +
 	"90919293949596979899"
-const maxBuf = 10
+const maxBuf = 19
 
 var itoaBuf [maxBuf]byte
 var lastL int = -1
