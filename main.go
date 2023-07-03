@@ -62,7 +62,7 @@ const smallsString = "00010203040506070809" +
 	"70717273747576777879" +
 	"80818283848586878889" +
 	"90919293949596979899"
-const maxBuf = 64
+const maxBuf = 11
 
 var itoaBuf [maxBuf]byte
 
@@ -88,13 +88,10 @@ func itoa(u int) (int, []byte) {
 }
 
 func itoafast(l, u int) []byte {
-	i := maxBuf
 	us := uint(u)
 	is := us % 100 * 2
-	us /= 100
-	i -= 2
-	itoaBuf[i+1] = smallsString[is+1]
-	itoaBuf[i+0] = smallsString[is+0]
+	itoaBuf[maxBuf-1] = smallsString[is+1]
+	itoaBuf[maxBuf-2] = smallsString[is]
 
 	return itoaBuf[l:]
 }
