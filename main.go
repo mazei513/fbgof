@@ -7,6 +7,12 @@ import (
 )
 
 func main() {
+	ch := make(chan string, 50)
+	go func() {
+		for {
+			out(<-ch)
+		}
+	}()
 	for i := 0; i < math.MaxInt; i++ {
 		str := ""
 		if i%3 == 0 {
@@ -18,6 +24,10 @@ func main() {
 		if str == "" {
 			str = fmt.Sprint(i)
 		}
-		os.Stdout.WriteString(str + "\n")
+		ch <- str
 	}
+}
+
+func out(str string) {
+	os.Stdout.WriteString(str + "\n")
 }
