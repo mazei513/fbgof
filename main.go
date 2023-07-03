@@ -1,11 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"math"
 	"os"
 	"runtime/pprof"
-	"strings"
 )
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
@@ -23,7 +23,7 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-	sb := &strings.Builder{}
+	sb := &bytes.Buffer{}
 	sb.Grow(1000000)
 	for i := 1; i < *n; i += 15 {
 		sb.Write(itoa(i))
