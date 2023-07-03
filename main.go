@@ -47,7 +47,7 @@ func main() {
 		sb.WriteString(strconv.Itoa(i + 13))
 		sb.WriteString("\n")
 		sb.WriteString("FizzBuzz\n")
-		if sb.Len() > 500000 {
+		if sb.Len() > 1000000 {
 			os.Stdout.WriteString(sb.String())
 			sb.Reset()
 		}
