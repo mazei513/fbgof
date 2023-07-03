@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"bufio"
 	"flag"
 	"math"
 	"os"
@@ -24,8 +24,7 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-	sb := &bytes.Buffer{}
-	sb.Grow(outBufMax * 10)
+	sb := bufio.NewWriter(os.Stdout)
 	interBuf := make([]byte, 0, 10*15)
 	for i := 1; i < *n; i += 15 {
 		l, b := itoa(i)
@@ -49,11 +48,8 @@ func main() {
 		interBuf = append(interBuf, []byte("\nFizzBuzz\n")...)
 		sb.Write(interBuf)
 		interBuf = interBuf[:0]
-		if sb.Len() > outBufMax {
-			sb.WriteTo(os.Stdout)
-			sb.Reset()
-		}
 	}
+	sb.Flush()
 }
 
 const smallsString = "00010203040506070809" +
