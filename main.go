@@ -65,7 +65,7 @@ const smallsString = "00010203040506070809" +
 const maxBuf = 19
 
 var itoaBuf [maxBuf]byte
-var lastL int = -1
+var lastL int
 var lastUs uint
 
 func itoa(u int) []byte {
