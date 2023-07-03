@@ -26,23 +26,26 @@ func main() {
 	}
 	sb := &bytes.Buffer{}
 	sb.Grow(outBufMax * 10)
+	interBuf := make([]byte, 0, 10*15)
 	for i := 1; i < *n; i += 15 {
-		sb.Write(itoa(i))
-		sb.WriteString("\n")
-		sb.Write(itoa(i + 1))
-		sb.WriteString("\nFizz\n")
-		sb.Write(itoa(i + 3))
-		sb.WriteString("\nBuzz\nFizz\n")
-		sb.Write(itoa(i + 6))
-		sb.WriteString("\n")
-		sb.Write(itoa(i + 7))
-		sb.WriteString("\nFizz\nBuzz\n")
-		sb.Write(itoa(i + 10))
-		sb.WriteString("\nFizz\n")
-		sb.Write(itoa(i + 12))
-		sb.WriteString("\n")
-		sb.Write(itoa(i + 13))
-		sb.WriteString("\nFizzBuzz\n")
+		interBuf = append(interBuf, itoa(i)...)
+		interBuf = append(interBuf, []byte("\n")...)
+		interBuf = append(interBuf, itoa(i+1)...)
+		interBuf = append(interBuf, []byte("\nFizz\n")...)
+		interBuf = append(interBuf, itoa(i+3)...)
+		interBuf = append(interBuf, []byte("\nBuzz\nFizz\n")...)
+		interBuf = append(interBuf, itoa(i+6)...)
+		interBuf = append(interBuf, []byte("\n")...)
+		interBuf = append(interBuf, itoa(i+7)...)
+		interBuf = append(interBuf, []byte("\nFizz\nBuzz\n")...)
+		interBuf = append(interBuf, itoa(i+10)...)
+		interBuf = append(interBuf, []byte("\nFizz\n")...)
+		interBuf = append(interBuf, itoa(i+12)...)
+		interBuf = append(interBuf, []byte("\n")...)
+		interBuf = append(interBuf, itoa(i+13)...)
+		interBuf = append(interBuf, []byte("\nFizzBuzz\n")...)
+		sb.Write(interBuf)
+		interBuf = interBuf[:0]
 		if sb.Len() > outBufMax {
 			sb.WriteTo(os.Stdout)
 			sb.Reset()
@@ -75,7 +78,6 @@ func itoa(u int) []byte {
 		itoaBuf[i+0] = smallsString[is+0]
 	}
 
-	// us < 100
 	is := us * 2
 	i--
 	itoaBuf[i] = smallsString[is+1]
