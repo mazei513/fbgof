@@ -1,16 +1,23 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"math"
 	"os"
 )
 
 func main() {
+	buf := bytes.Buffer{}
 	ch := make(chan string, 50)
 	go func() {
 		for {
-			out(<-ch)
+			buf.WriteString(<-ch)
+			if buf.Len() < 1000 {
+				continue
+			}
+			os.Stdout.Write(buf.Bytes())
+			buf.Truncate(0)
 		}
 	}()
 	for i := 1; i < math.MaxInt; i += 15 {
@@ -18,8 +25,4 @@ func main() {
 			i, i+1, i+3, i+6, i+7, i+10, i+12, i+13)
 		ch <- str
 	}
-}
-
-func out(str string) {
-	os.Stdout.WriteString(str + "\n")
 }
