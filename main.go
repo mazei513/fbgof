@@ -46,10 +46,16 @@ func main() {
 		interBuf = append(interBuf, []byte("\n")...)
 		interBuf = append(interBuf, itoafast(l, i+13)...)
 		interBuf = append(interBuf, []byte("\nFizzBuzz\n")...)
-		sb.Write(interBuf)
+		_, err := sb.Write(interBuf)
+		if err != nil {
+			panic(err)
+		}
 		interBuf = interBuf[:0]
 	}
-	sb.Flush()
+	err := sb.Flush()
+	if err != nil {
+		panic(err)
+	}
 }
 
 const smallsString = "00010203040506070809" +
