@@ -1,16 +1,29 @@
 package main
 
 import (
+	"flag"
 	"math"
 	"os"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 )
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+var n = flag.Int("n", math.MaxInt, "N")
+
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			panic(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 	sb := &strings.Builder{}
-	sb.Grow(1000000)
-	for i := 1; i < math.MaxInt; i += 15 {
+	for i := 1; i < *n; i += 15 {
 		sb.WriteString(strconv.Itoa(i))
 		sb.WriteString("\n")
 		sb.WriteString(strconv.Itoa(i + 1))
