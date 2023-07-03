@@ -12,6 +12,7 @@ var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
 var n = flag.Int("n", math.MaxInt, "N")
 
 const base = 10
+const outBufMax = 1000000
 
 func main() {
 	flag.Parse()
@@ -24,7 +25,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 	sb := &bytes.Buffer{}
-	sb.Grow(1000000)
+	sb.Grow(outBufMax * 10)
 	for i := 1; i < *n; i += 15 {
 		sb.Write(itoa(i))
 		sb.WriteString("\n")
@@ -42,8 +43,8 @@ func main() {
 		sb.WriteString("\n")
 		sb.Write(itoa(i + 13))
 		sb.WriteString("\nFizzBuzz\n")
-		if sb.Len() > 1000000 {
-			os.Stdout.WriteString(sb.String())
+		if sb.Len() > outBufMax {
+			sb.WriteTo(os.Stdout)
 			sb.Reset()
 		}
 	}
