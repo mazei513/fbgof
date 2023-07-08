@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"math"
 	"os"
@@ -21,39 +20,52 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-	sb := bufio.NewWriter(os.Stdout)
-	interBuf := make([]byte, 0, 19*15)
+	const interBufL = 2048 * 10
+	const interL = 19 * 15
+	interBuf := make([]byte, interBufL)
 	fb1 := []byte("\nFizz\n")
 	fb2 := []byte("\nBuzz\nFizz\n")
 	fb3 := []byte("\nFizz\nBuzz\n")
 	fb4 := []byte("\nFizzBuzz\n")
+	var bn int
 	for i := 1; i < *n; i += 15 {
-		interBuf = append(interBuf, itoa(i)...)
-		interBuf = append(interBuf, '\n')
-		interBuf = append(interBuf, itoa(i+1)...)
-		interBuf = append(interBuf, fb1...)
-		interBuf = append(interBuf, itoa(i+3)...)
-		interBuf = append(interBuf, fb2...)
-		interBuf = append(interBuf, itoa(i+6)...)
-		interBuf = append(interBuf, '\n')
-		interBuf = append(interBuf, itoa(i+7)...)
-		interBuf = append(interBuf, fb3...)
-		interBuf = append(interBuf, itoa(i+10)...)
-		interBuf = append(interBuf, fb1...)
-		interBuf = append(interBuf, itoa(i+12)...)
-		interBuf = append(interBuf, '\n')
-		interBuf = append(interBuf, itoa(i+13)...)
-		interBuf = append(interBuf, fb4...)
-		_, err := sb.Write(interBuf)
-		if err != nil {
-			panic(err)
+		bn = lenCpy(bn, interBuf, itoa(i))
+		bn = newLn(bn, interBuf)
+		bn = lenCpy(bn, interBuf, itoa(i+1))
+		bn = lenCpy(bn, interBuf, fb1)
+		bn = lenCpy(bn, interBuf, itoa(i+3))
+		bn = lenCpy(bn, interBuf, fb2)
+		bn = lenCpy(bn, interBuf, itoa(i+6))
+		bn = newLn(bn, interBuf)
+		bn = lenCpy(bn, interBuf, itoa(i+7))
+		bn = lenCpy(bn, interBuf, fb3)
+		bn = lenCpy(bn, interBuf, itoa(i+10))
+		bn = lenCpy(bn, interBuf, fb1)
+		bn = lenCpy(bn, interBuf, itoa(i+12))
+		bn = newLn(bn, interBuf)
+		bn = lenCpy(bn, interBuf, itoa(i+13))
+		bn = lenCpy(bn, interBuf, fb4)
+		if bn > interBufL-interL {
+			_, err := os.Stdout.Write(interBuf[:bn])
+			if err != nil {
+				panic(err)
+			}
+			bn = 0
 		}
-		interBuf = interBuf[:0]
 	}
-	err := sb.Flush()
+	_, err := os.Stdout.Write(interBuf[:bn])
 	if err != nil {
 		panic(err)
 	}
+}
+
+func lenCpy(ln int, dst, src []byte) int {
+	copy(dst[ln:], src)
+	return ln + len(src)
+}
+func newLn(ln int, dst []byte) int {
+	dst[ln] = '\n'
+	return ln + 1
 }
 
 const smallsString = "00010203040506070809" +
