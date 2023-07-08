@@ -23,26 +23,23 @@ func main() {
 	const interBufL = 2048 * 10
 	const interL = 19 * 15
 	interBuf := make([]byte, interBufL)
-	fb1 := []byte("\nFizz\n")
-	fb2 := []byte("\nBuzz\nFizz\n")
-	fb3 := []byte("\nFizz\nBuzz\n")
-	fb4 := []byte("\nFizzBuzz\n")
+	fb1 := []byte("Fizz\n")
+	fb2 := []byte("Buzz\nFizz\n")
+	fb3 := []byte("Fizz\nBuzz\n")
+	fb4 := []byte("FizzBuzz\n")
 	var bn int
 	for i := 1; i < *n; i += 15 {
 		bn = lenCpy(bn, interBuf, itoa(i))
-		bn = newLn(bn, interBuf)
 		bn = lenCpy(bn, interBuf, itoa(i+1))
 		bn = lenCpy(bn, interBuf, fb1)
 		bn = lenCpy(bn, interBuf, itoa(i+3))
 		bn = lenCpy(bn, interBuf, fb2)
 		bn = lenCpy(bn, interBuf, itoa(i+6))
-		bn = newLn(bn, interBuf)
 		bn = lenCpy(bn, interBuf, itoa(i+7))
 		bn = lenCpy(bn, interBuf, fb3)
 		bn = lenCpy(bn, interBuf, itoa(i+10))
 		bn = lenCpy(bn, interBuf, fb1)
 		bn = lenCpy(bn, interBuf, itoa(i+12))
-		bn = newLn(bn, interBuf)
 		bn = lenCpy(bn, interBuf, itoa(i+13))
 		bn = lenCpy(bn, interBuf, fb4)
 		if bn > interBufL-interL {
@@ -63,10 +60,6 @@ func lenCpy(ln int, dst, src []byte) int {
 	copy(dst[ln:], src)
 	return ln + len(src)
 }
-func newLn(ln int, dst []byte) int {
-	dst[ln] = '\n'
-	return ln + 1
-}
 
 const smallsString = "00010203040506070809" +
 	"10111213141516171819" +
@@ -86,6 +79,8 @@ var lastUs uint
 
 func itoa(u int) []byte {
 	i := maxBuf
+	itoaBuf[i-1] = '\n'
+	i--
 	us := uint(u)
 	if us >= 100 {
 		is := us % 100 * 2
