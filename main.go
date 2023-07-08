@@ -20,45 +20,39 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-	const interBufL = 2048 * 10
+	const interBufL = 1024 * 64
 	const interL = 19 * 15
-	interBuf := make([]byte, interBufL)
+	interBuf := make([]byte, 0, interBufL)
 	fb1 := []byte("Fizz\n")
 	fb2 := []byte("Buzz\nFizz\n")
 	fb3 := []byte("Fizz\nBuzz\n")
 	fb4 := []byte("FizzBuzz\n")
-	var bn int
 	for i := 1; i < *n; i += 15 {
-		bn = lenCpy(bn, interBuf, itoa(i))
-		bn = lenCpy(bn, interBuf, itoa(i+1))
-		bn = lenCpy(bn, interBuf, fb1)
-		bn = lenCpy(bn, interBuf, itoa(i+3))
-		bn = lenCpy(bn, interBuf, fb2)
-		bn = lenCpy(bn, interBuf, itoa(i+6))
-		bn = lenCpy(bn, interBuf, itoa(i+7))
-		bn = lenCpy(bn, interBuf, fb3)
-		bn = lenCpy(bn, interBuf, itoa(i+10))
-		bn = lenCpy(bn, interBuf, fb1)
-		bn = lenCpy(bn, interBuf, itoa(i+12))
-		bn = lenCpy(bn, interBuf, itoa(i+13))
-		bn = lenCpy(bn, interBuf, fb4)
-		if bn > interBufL-interL {
-			_, err := os.Stdout.Write(interBuf[:bn])
+		interBuf = append(interBuf, itoa(i)...)
+		interBuf = append(interBuf, itoa(i+1)...)
+		interBuf = append(interBuf, fb1...)
+		interBuf = append(interBuf, itoa(i+3)...)
+		interBuf = append(interBuf, fb2...)
+		interBuf = append(interBuf, itoa(i+6)...)
+		interBuf = append(interBuf, itoa(i+7)...)
+		interBuf = append(interBuf, fb3...)
+		interBuf = append(interBuf, itoa(i+10)...)
+		interBuf = append(interBuf, fb1...)
+		interBuf = append(interBuf, itoa(i+12)...)
+		interBuf = append(interBuf, itoa(i+13)...)
+		interBuf = append(interBuf, fb4...)
+		if len(interBuf) > interBufL-interL {
+			_, err := os.Stdout.Write(interBuf)
 			if err != nil {
 				panic(err)
 			}
-			bn = 0
+			interBuf = interBuf[:0]
 		}
 	}
-	_, err := os.Stdout.Write(interBuf[:bn])
+	_, err := os.Stdout.Write(interBuf)
 	if err != nil {
 		panic(err)
 	}
-}
-
-func lenCpy(ln int, dst, src []byte) int {
-	copy(dst[ln:], src)
-	return ln + len(src)
 }
 
 const smallsString = "00010203040506070809" +
